@@ -19,9 +19,15 @@ def lyrics_from_song_api_path(song_api_path):
     html = BeautifulSoup(page.text, 'html.parser')
     [h.extract() for h in html('script')]
     lyrics = html.find('div', {'class': 'lyrics'}).get_text()
-    return re.sub(r'\n\[.*\]', '', lyrics)
+    # this regex matches with all text enclosed by square brackets
+    return re.sub(r'\n\[[^\]]*\]', '', lyrics)
 
 def parse_album_file(album_file):
+    """
+    assume first line is artist name,
+    second line is album name,
+    remaining lines are song titles
+    """
     txt = open(album_file)
     artist_name = txt.readline().strip()
     album_name = txt.readline().strip()
@@ -35,10 +41,11 @@ if __name__ == '__main__':
     $ python genius.py lyrics/kendrick/tpab.txt lyrics/kendrick/tpab/
     that last slash / in target_directory is important
     """
-    assert len(sys.argv) == 3
+    assert len(sys.argv) == 3, 'command line arguments: album.txt, target_directory'
     _, album_file, target_directory = sys.argv
     artist_name, album_name, songs = parse_album_file(album_file)
     for i, song_title in enumerate(songs):
+        # query string sent as request
         data = {'q': song_title + ' ' + artist_name}
         response = requests.get(search_url, data=data, headers=headers)
         json = response.json()
@@ -46,9 +53,9 @@ if __name__ == '__main__':
             if hit['result']['primary_artist']['name'] == artist_name:
                 song_api_path = hit['result']['api_path']
                 lyrics = lyrics_from_song_api_path(song_api_path)
-                # print(lyrics)
-                f = open(target_directory + str(i) + '.txt', 'w')
-                f.write(song_title + '\n\n')
+                # file name 00.txt, 01.txt, and so on
+                f = open(target_directory + "%02d" % (i,) + '.txt', 'w')
+                f.write(song_title + '\n')
                 f.write(lyrics)
                 f.close()
                 break
