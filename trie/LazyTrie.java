@@ -13,11 +13,17 @@ class LazyTrie extends Trie {
 
     @Override
     public void insert(String s) {
-
+        Node curr = sentinel;
+        for (int i = 0; i < s.length(); i++) {
+            char ch = s.charAt(i);
+            if (curr.children[ch] == null) {
+                curr.children[ch] = new Node();
+                curr.children[ch].str = new String(s);
+                return;
+            }
+            if (curr.children[ch].str != null) {
+                // sink these strings 
+        }
     }
 
-    @Override
-    public List<String> getByPrefix(String prefix) {
-
-    }
 }

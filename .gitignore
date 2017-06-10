@@ -2,3 +2,7 @@
 *.swp
 *.swo
 .*
+*.txt
+*.trie
+*.class
+lyrics/

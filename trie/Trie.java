@@ -2,31 +2,7 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Trie {
-    class Node {
-        Node[] children;
-        String str;
-
-        Node() {
-            children = new Node[256];
-            str = null;
-        }
-
-        void getByPrefix(String prefix, List<String> list) {
-            if (str != null) {
-                list.add(str);
-            }
-            if (prefix.length() == 0) {
-                for (char ch = 0; ch < 256; ch++) {
-                    if (children[ch] != null)
-                        children[ch].getByPrefix(prefix, list);
-                }
-            } else if (children[prefix.charAt(0)] != null) {
-                children[prefix.charAt(0)].getByPrefix(prefix.substring(1), list);
-            }
-        }
-    }
-
-    Node sentinel;
+    public Node sentinel;
 
     public Trie() {
         this.sentinel = new Node();
@@ -36,12 +12,12 @@ public class Trie {
         Node curr = sentinel;
         for (int i = 0; i < s.length(); i++) {
             char ch = s.charAt(i);
-            if (curr.children[ch] == null) {
-                curr.children[ch] = new Node();
+            if (curr.child(ch) == null) {
+                curr.addChild(ch);
             }
-            curr = curr.children[ch];
+            curr = curr.child(ch);
         }
-        curr.str = new String(s);
+        curr.str = s;
     }
                 
     public List<String> getByPrefix(String prefix) {
@@ -58,6 +34,7 @@ public class Trie {
         System.out.println(trie.getByPrefix("a"));
         System.out.println(trie.getByPrefix("b"));
         System.out.println(trie.getByPrefix(""));
+        System.out.println(trie.getByPrefix("andy"));
     }
 
 }
