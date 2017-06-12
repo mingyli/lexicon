@@ -5,15 +5,31 @@ import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 
 /**
+ * TrieCompressor uses a trie to determine
+ * unique points of words. It is good
+ * for compressing text with many 
+ * long words.
+ *
+ * This usually performs very poorly.
+ *
+ *
  * How to use this utility:
  *
- * java TrieCompressor <input_file> <output_file>
+ * {@code java TrieCompressor <input_file> <output_file>}
+ *
+ * @author Ming Li
+ *
  */
 
 public class TrieCompressor {
     private Trie trie;
     private String inputFile;
 
+    /**
+     * The constructor takes text from a file
+     * and forms a trie with words from the text.
+     * @param inputFile the name of the file
+     */
     public TrieCompressor(String inputFile) {
         trie = new Trie();
         this.inputFile = inputFile;
@@ -30,6 +46,11 @@ public class TrieCompressor {
         }
     }
 
+    /**
+     * This method writes the compressed contents of `inputFile`
+     * to `outputFile`.
+     * @param outputFile the name of the output file
+     */
     private void compressToFile(String outputFile) {
         try {
             Scanner scanner = new Scanner(new File(inputFile));
