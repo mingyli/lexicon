@@ -77,7 +77,6 @@ public class TrieCompressor {
 
     private String compress(String s) {
         // assert s in lexicon
-        // V1
         for (int i = 0; i < s.length(); i++) {
             String prefix = s.substring(0, i);
             List<String> completed = trie.getByPrefix(prefix);
@@ -86,10 +85,6 @@ public class TrieCompressor {
             }
         }
         return s;
-
-        // V2
-        // Node curr = trie.sentinel;
-        // TODO
     }
 
     public static void main(String[] args) {
