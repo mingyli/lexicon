@@ -2,7 +2,11 @@ import java.util.List;
 import java.util.Scanner;
 import java.io.File;
 import java.io.PrintWriter;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
+import java.io.FileInputStream;
+import java.io.ObjectInputStream;
 
 /**
  * TrieCompressor uses a trie to determine
@@ -41,7 +45,7 @@ public class TrieCompressor {
                 trie.insert(word);
             }
             scanner.close();
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             System.err.println(inputFile + " not found.");
         }
     }
@@ -69,7 +73,7 @@ public class TrieCompressor {
             }
             scanner.close();
             output.close();
-        } catch (FileNotFoundException e) {
+        } catch (IOException e) {
             System.err.println(outputFile + " not found.");
         }
     }
@@ -87,14 +91,29 @@ public class TrieCompressor {
         return s;
     }
 
+    public void serialize(String outputFile) {
+        try {
+            FileOutputStream fileOut = new FileOutputStream(outputFile + ".ser");
+            ObjectOutputStream objOut = new ObjectOutputStream(fileOut);
+            objOut.writeObject(trie);
+            objOut.close();
+            fileOut.close();
+            System.out.println("trie serialized into " + outputFile + ".ser");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         if (args.length != 2) {
             throw new IllegalArgumentException("provide <input_file> and <output_file>");
         }
         TrieCompressor tc = new TrieCompressor(args[0]);
         tc.compressToFile(args[1]);
+        tc.serialize(args[1]);
 
 
+        
         // String[] lexicon = {"vanguard", "comatose", "vantage"};
         // tc = new TrieCompressor(lexicon);
         // System.out.println(tc.compress("vanguard"));
