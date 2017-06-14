@@ -40,9 +40,12 @@ public class TrieCompressor {
         
         try {
             Scanner scanner = new Scanner(new File(inputFile));
-            while (scanner.hasNext()) {
-                String word = scanner.next();
-                trie.insert(word);
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
+                String[] tokens = line.split("\\b");
+                for (String token : tokens) {
+                    trie.insert(token);
+                }
             }
             scanner.close();
         } catch (IOException e) {
@@ -58,12 +61,9 @@ public class TrieCompressor {
     private void compressToFile(String outputFile) {
         try {
             Scanner scanner = new Scanner(new File(inputFile));
-            // String[] tokens = fileName.split("\\.(?=[^\\.]+$)");
-            // PrintWriter output = new PrintWriter(tokens[0] + ".trie");
             PrintWriter output = new PrintWriter(outputFile);
             while (scanner.hasNextLine()) {
                 String line = scanner.nextLine();
-                // String[] words = line.split("((?<=\\s+)|(?=\\s+))");
                 String[] words = line.split("\\b");
                 for (String word : words) {
                     String compressed = compress(word);
@@ -98,7 +98,6 @@ public class TrieCompressor {
             objOut.writeObject(trie);
             objOut.close();
             fileOut.close();
-            System.out.println("trie serialized into " + outputFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -110,22 +109,10 @@ public class TrieCompressor {
         }
         String[] tokens = args[0].split("\\.(?=[^\\.]+$)");
         TrieCompressor tc = new TrieCompressor(args[0]);
+        System.out.println("Compressing " + args[0] + " to " + tokens[0] + ".short");
         tc.compressToFile(tokens[0] + ".short");
+        System.out.println("Serializing trie to " + tokens[0] + ".trie");
         tc.serialize(tokens[0] + ".trie");
 
-
-        
-        // String[] lexicon = {"vanguard", "comatose", "vantage"};
-        // tc = new TrieCompressor(lexicon);
-        // System.out.println(tc.compress("vanguard"));
-        // System.out.println(tc.compress("comatose"));
-        // System.out.println(tc.compress("vantage"));
-
-        // tc = new TrieCompressor("text.txt");
-        // System.out.println(tc.compress("cardboard"));
-        // System.out.println(tc.compress("language"));
-        // System.out.println(tc.compress("berkeley"));
-        // System.out.println(tc.compress("processing"));
-        // System.out.println(tc.compress("computer"));
     }
 }

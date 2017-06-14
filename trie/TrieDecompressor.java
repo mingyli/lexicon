@@ -18,7 +18,6 @@ public class TrieDecompressor {
             trie = (Trie) objIn.readObject();
             objIn.close();
             fileIn.close();
-            System.out.println(trie);
         } catch (IOException e) {
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
@@ -35,7 +34,6 @@ public class TrieDecompressor {
                 String line = scanner.nextLine();
                 String[] words = line.split("\\b");
                 for (String word : words) {
-                    System.out.println("..." + word);
                     List<String> completes = trie.getByPrefix(word);
                     if (completes.size() == 1) {
                         output.print(completes.get(0));
@@ -58,7 +56,10 @@ public class TrieDecompressor {
 
         String[] tokens = args[0].split("\\.(?=[^\\.]+$)");
         TrieDecompressor td = new TrieDecompressor();
+        System.out.println("Deserializing " + args[0]);
         td.deserialize(args[0]);
-        td.decompressToFile(args[1], tokens[0] + "_dec.txt");
+        String decompressedFile = tokens[0] + "_dec.txt";
+        System.out.println("Decompressing " + args[1] + " to " + decompressedFile);
+        td.decompressToFile(args[1], decompressedFile);
     }
 }
