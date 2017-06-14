@@ -11,7 +11,7 @@ public class Trie implements Serializable {
     class Node implements Serializable {
         Map<Character, Node> children;
         String str;
-        transient Set<String> complete; // memoize getByPrefix
+        Set<String> complete; // memoize getByPrefix
                                         // it is not memoized
         private static final int serialVersionUID = 2;
 

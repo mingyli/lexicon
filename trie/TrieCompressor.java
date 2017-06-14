@@ -19,7 +19,7 @@ import java.io.ObjectInputStream;
  *
  * How to use this utility:
  *
- * {@code java TrieCompressor <input_file> <output_file>}
+ * {@code java TrieCompressor <input_file>}
  *
  * @author Ming Li
  *
@@ -93,24 +93,25 @@ public class TrieCompressor {
 
     public void serialize(String outputFile) {
         try {
-            FileOutputStream fileOut = new FileOutputStream(outputFile + ".ser");
+            FileOutputStream fileOut = new FileOutputStream(outputFile);
             ObjectOutputStream objOut = new ObjectOutputStream(fileOut);
             objOut.writeObject(trie);
             objOut.close();
             fileOut.close();
-            System.out.println("trie serialized into " + outputFile + ".ser");
+            System.out.println("trie serialized into " + outputFile);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public static void main(String[] args) {
-        if (args.length != 2) {
-            throw new IllegalArgumentException("provide <input_file> and <output_file>");
+        if (args.length != 1) {
+            throw new IllegalArgumentException("provide <input_file>");
         }
+        String[] tokens = args[0].split("\\.(?=[^\\.]+$)");
         TrieCompressor tc = new TrieCompressor(args[0]);
-        tc.compressToFile(args[1]);
-        tc.serialize(args[1]);
+        tc.compressToFile(tokens[0] + ".short");
+        tc.serialize(tokens[0] + ".trie");
 
 
         
