@@ -5,20 +5,19 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.HashSet;
 import java.util.Arrays;
+import java.util.Queue;
+import java.util.LinkedList;
 import java.io.Serializable;
 
 public class Trie implements Serializable {
     class Node implements Serializable {
         Map<Character, Node> children;
         String str;
-        Set<String> complete; // memoize getByPrefix
-                                        // it is not memoized
         private static final int serialVersionUID = 2;
 
         Node() {
             children = new HashMap<>();
             str = null;
-            complete = new HashSet<>();
         }
 
         Node child(char ch) {
@@ -60,7 +59,6 @@ public class Trie implements Serializable {
     public void insert(String s) {
         Node curr = sentinel;
         for (int i = 0; i < s.length(); i++) {
-            curr.complete.add(s);
             char ch = s.charAt(i);
             if (curr.child(ch) == null) {
                 curr.addChild(ch);
@@ -68,7 +66,6 @@ public class Trie implements Serializable {
             curr = curr.child(ch);
         }
         curr.str = s;
-        curr.complete.add(s);
     }
                 
     public List<String> getByPrefix(String prefix) {
@@ -86,7 +83,15 @@ public class Trie implements Serializable {
             }
             curr = curr.child(ch);
         }
-        list.addAll(curr.complete);
+        Queue<Node> q = new LinkedList<>();
+        q.add(curr);
+        while (!q.isEmpty()) {
+            Node n = q.remove();
+            if (n.str != null)
+                list.add(n.str);
+            for (Node c : n.children.values()) 
+                q.add(c);
+        }
     }
 
     @Override

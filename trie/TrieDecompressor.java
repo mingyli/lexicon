@@ -8,6 +8,20 @@ import java.io.ObjectOutputStream;
 import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
+/**
+ * TrieDecompressor uses a serialized 
+ * trie and a compressed text file
+ * to restore an original piece of text.
+ *
+ *
+ * How to use this utility:
+ *
+ * {@code java TrieDecompressor <name.trie> <name.short>}
+ *
+ * @author Ming Li
+ *
+ */
+
 public class TrieDecompressor {
     private Trie trie;
 
