@@ -54,7 +54,7 @@ if __name__ == '__main__':
                 song_api_path = hit['result']['api_path']
                 lyrics = lyrics_from_song_api_path(song_api_path)
                 # file name 00.txt, 01.txt, and so on
-                f = open(target_directory + "%02d" % (i,) + '.txt', 'w')
+                f = open(target_directory + "%02d" % (i,) + '.txt', 'w+')
                 f.write(song_title + '\n')
                 f.write(lyrics)
                 f.close()
