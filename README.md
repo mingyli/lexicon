@@ -1,4 +1,4 @@
-## `genius.py`
+## [`genius.py`](genius.py)
 
 uses BeautifulSoup and Genius API to retrieve lyrics 
 
