@@ -1,69 +1,71 @@
 import math
-from nltk import FreqDist
-from nltk import RegexpTokenizer
-from nltk.corpus import PlaintextCorpusReader
-from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
+from collections import namedtuple
+from queue import PriorityQueue
 
-punctuation = {'!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',', '-', '.', '/',
-        ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'}
-stopword_set = set(stopwords.words('english'))
-stemmer = PorterStemmer()
+from music import Song, Album
 
-class Song:
-    def __init__(self, lyrics):
-        self.lexicon = set(lyrics)
-        self.fdist = FreqDist(lyrics)
 
-    def contains(self, word):
-        return word in self.lexicon
+Term = namedtuple('Term', ['word', 'tfidf'])
+Term.__lt__ = lambda t1, t2: t1.tfidf < t2.tfidf
 
-    def term_freq(self, word):
-        return self.fdist[word]
 
-def normalize(words):
-    words = [word.lower() for word in words]
-    words = [word for word in words if word not in punctuation]
-    # words = [word for word in words if word not in stopword_set]
-    words = [stemmer.stem(word) for word in words]
-    return words
+def important_words(album, n=5):
+    """
+    Get the n most important words in each song based on
+    tf-idf score of each song with respect to the
+    album.
+
+    Returns a set mapping each song to n words and their
+    tf-idf scores.
+
+    >>> damn_album = Album('lyrics/kendrick/damn/')
+    >>> damn_important_words = important_words(damn_album)
+    >>> blood = damn_album[0]
+    >>> terms = [term for term in damn_important_words[blood]]
+    >>> sorted(term.word for term in terms)
+    ['blind', 'decide', 'she', 'something', 'wickedness']
+    >>> max(terms, key=lambda t: t.tfidf).word
+    'something'
+    """
+    important_words = dict()
+
+    for song in album:
+        important_words[song] = set()
+        # terms = PriorityQueue(n)
+        # for word, count in song.wordcounts():
+        #     # calculate tf-idf of word in song with respect to album
+        #     tf = count
+        #     appearances = sum(word in song for song in album)
+        #     idf = math.log(len(album) / appearances)
+        #     new_term = Term(word=word, tfidf=tf * idf)
+        #     if terms.full():
+        #         old_term = terms.get()
+        #         terms.put(max([new_term, old_term]))
+        #     else:
+        #         terms.put(new_term)
+
+        # for i in range(terms.qsize()):
+        #     print(terms.get())
+
+        terms = []
+        for word, count in song.wordcounts():
+            tf = count
+            appearances = sum(word in song for song in album)
+            idf = math.log(len(album) / appearances)
+            terms.append(Term(word=word, tfidf=tf * idf))
+
+        terms.sort(key=lambda t: -t.tfidf)
+        for i in range(n):
+            important_words[song].add(terms[i])
+
+    return important_words
+
 
 if __name__ == '__main__':
-    corpus_root = 'lyrics/kendrick/tpab/'
-
-    pattern = r"""(?x)                   # set flag to allow verbose regexps
-                  (?:[A-Z]\.)+           # abbreviations, e.g. U.S.A.
-                  |\d+(?:\.\d+)?%?       # numbers, incl. currency and percentages
-                  |\w+(?:[-']\w+)*       # words w/ optional internal hyphens/apostrophe
-                  |(?:[+/\-@&*])         # special characters with meanings
-               """
-    tokenizer = RegexpTokenizer(pattern, gaps=False)
-    album_corpus = PlaintextCorpusReader(corpus_root, r'.*\.txt', word_tokenizer=tokenizer)
-    
-    album_lyrics = normalize(album_corpus.words())
-    album_fdist = FreqDist(album_lyrics)
-
-
-    album = []
-    for fileid in album_corpus.fileids():
-        lyrics = normalize(album_corpus.words(fileid))
-        album.append(Song(lyrics))
-
-
-
-    def tf_idf(word, l_fdist):
-        tf = l_fdist[word]
-        appearances = 0
-        return tf
-
-
-    tuples = []
-    for word, freq in album[4].fdist.most_common():
-        appearances = sum(song.contains(word) for song in album)
-        idf = math.log(len(album) / appearances)
-        # print(word, freq, idf, freq * idf)
-        tuples.append((word, freq, idf, freq * idf))
-
-    tuples.sort(key=lambda t: t[3])
-    for t in tuples:
-        print(t)
+    damn_album = Album('lyrics/kendrick/damn/')
+    damn_important_words = important_words(damn_album)
+    import pprint
+    pp = pprint.PrettyPrinter()
+    for song in damn_album:
+        print(song)
+        pp.pprint(damn_important_words[song])

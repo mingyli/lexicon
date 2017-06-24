@@ -1,14 +1,15 @@
 from nltk import RegexpTokenizer
 from nltk import FreqDist
+from nltk import WordNetLemmatizer
 from nltk.corpus import stopwords
 from nltk.corpus import PlaintextCorpusReader
 from nltk.stem.snowball import SnowballStemmer
 
-pattern = r"""(?x)                 # set flag to allow verbose regexps
-              (?:[A-Z]\.)+         # abbreviations, e.g. U.S.A.
-              |\d+(?:\.\d+)?%?     # numbers, incl. currency and percentages
-              |\w+(?:[-’']\w+)*    # words w/ optional internal hyphens/apostrophe
-              |(?:[+/\-@&*])       # special characters with meanings
+pattern = r"""(?x)               # set flag to allow verbose regexps
+              (?:[A-Z]\.)+       # abbreviations, e.g. U.S.A.
+              |\d+(?:\.\d+)?%?   # numbers, incl. currency and percentages
+              |\w+(?:[-’']\w+)*  # words w/ optional internal hyphens/apostrophe
+              |(?:[+/\-@&*])     # special characters with meanings
            """
 tokenizer = RegexpTokenizer(pattern)
 punctuation = {'!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',',
@@ -16,6 +17,7 @@ punctuation = {'!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',',
         ']', '^', '_', '`', '{', '|', '}', '~'}
 english_stopwords = set(stopwords.words('english'))
 stemmer = SnowballStemmer('english')
+wnl = WordNetLemmatizer()
 
 def normalize(words, nostopwords=False):
     """Return a generator to normalize words.
@@ -32,7 +34,10 @@ def normalize(words, nostopwords=False):
             continue
         if nostopwords and word in english_stopwords:
             continue
-        yield stemmer.stem(word.lower())
+        # yield stemmer.stem(word.lower())
+        # lemmatizer is slower than stemming but its function is more 
+        # suitable for looking at song content
+        yield wnl.lemmatize(word.lower())
 
 class TextCollection:
     """
@@ -99,6 +104,7 @@ class Album(TextCollection):
 
 class Song(TextCollection):
     def __init__(self, fileid):
+        self.fileid = fileid
         self.corpus = PlaintextCorpusReader('.', 
                                             fileid,
                                             word_tokenizer=tokenizer)
@@ -107,6 +113,12 @@ class Song(TextCollection):
     def __repr__(self):
         title = self.corpus.sents()[0]
         return "<Song " + ' '.join(title) + ">"
+
+    def __eq__(self, other):
+        return self.fileid == other.fileid
+
+    def __hash__(self):
+        return hash(self.fileid)
 
 if __name__ == '__main__':
     damn = Album('lyrics/kendrick/damn/')

@@ -5,3 +5,7 @@
 *.txt
 *.trie
 *.class
+*.vim
+
+__pycache__
+
