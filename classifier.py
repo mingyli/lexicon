@@ -2,10 +2,10 @@ import nltk
 import random
 from music import Album
 
-damn = Album('lyrics/kendrick/damn/')
-red = Album('lyrics/taylor/red/')
-_1989 = Album('lyrics/taylor/1989/')
-tpab = Album('lyrics/kendrick/tpab/')
+damn = Album('lyrics/kendrick/damn.txt')
+red = Album('lyrics/taylor/red.txt')
+_1989 = Album('lyrics/taylor/1989.txt')
+tpab = Album('lyrics/kendrick/tpab.txt')
 documents = [(song.words, 'kendrick') for song in damn]
 documents += [(song.words, 'taylor') for song in red]
 documents += [(song.words, 'taylor') for song in _1989]
@@ -27,7 +27,11 @@ def document_features(document):
     return features
 
 feature_sets = [(document_features(d), c) for (d, c) in documents]
-split = int(len(feature_sets) / 5)
-train_set, test_set = feature_sets[split:], feature_sets[:split]
-classifier = nltk.NaiveBayesClassifier.train(train_set)
-print(classifier.classify(document_features(['yah'])))
+
+if __name__ == '__main__':
+    split = int(len(feature_sets) / 5)
+    train_set, test_set = feature_sets[split:], feature_sets[:split]
+    classifier = nltk.NaiveBayesClassifier.train(train_set)
+    # print(classifier.classify(document_features(['yah'])))
+    print(nltk.classify.accuracy(classifier, test_set))
+    classifier.show_most_informative_features(5)

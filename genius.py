@@ -6,8 +6,6 @@ from bs4 import BeautifulSoup
 
 base_url = 'https://api.genius.com'
 search_url = base_url + '/search'
-TOKEN = os.environ['TOKEN']
-headers = {'Authorization': 'Bearer ' + TOKEN}
 
 def lyrics_from_song_api_path(song_api_path):
     song_url = base_url + song_api_path
@@ -43,6 +41,8 @@ if __name__ == '__main__':
     """
     assert len(sys.argv) == 3, 'command line arguments: album.txt, target_directory'
     _, album_file, target_directory = sys.argv
+    TOKEN = os.environ['TOKEN']
+    headers = {'Authorization': 'Bearer ' + TOKEN}
     artist_name, album_name, songs = parse_album_file(album_file)
     for i, song_title in enumerate(songs):
         # query string sent as request

@@ -25,7 +25,7 @@ def important_words(album, n=None):
     Returns a set mapping each song to a list of n Terms
     sorted by their tf-idf scores.
 
-    >>> damn_album = Album('lyrics/kendrick/damn/')
+    >>> damn_album = Album('lyrics/kendrick/damn.txt')
     >>> damn_important_words = important_words(damn_album, 5)
     >>> dna = damn_album[1]
     >>> terms = [term for term in damn_important_words[dna]]
@@ -70,7 +70,7 @@ def important_words(album, n=None):
 
 if __name__ == '__main__':
     import pprint
-    damn_album = Album('lyrics/kendrick/damn/')
+    damn_album = Album('lyrics/kendrick/damn.txt')
     damn_important_words = important_words(damn_album)
     pp = pprint.PrettyPrinter()
     print(damn_album[1])
