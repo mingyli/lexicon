@@ -1,4 +1,5 @@
 import requests
+import json
 import os
 import sys
 import re
@@ -22,24 +23,25 @@ def lyrics_from_song_api_path(song_api_path):
 
 def parse_album_file(album_file):
     """
-    assume first line is artist name,
-    second line is album name,
-    remaining lines are song titles
+    read from a json file with attributes
+    'artist': string
+    'album': string
+    'song': list of strings
     """
-    txt = open(album_file)
-    artist_name = txt.readline().strip()
-    album_name = txt.readline().strip()
-    songs = [line.strip() for line in txt]
-    txt.close()
+    with open(album_file) as data_file:
+        data = json.load(data_file)
+    artist_name = data['artist']
+    album_name = data['album']
+    songs = data['songs']
     return artist_name, album_name, songs
 
 if __name__ == '__main__':
     """
-    command line arguments: album.txt, target_directory
-    $ python genius.py lyrics/kendrick/tpab.txt lyrics/kendrick/tpab/
+    command line arguments: album.json, target_directory
+    $ python genius.py lyrics/kendrick/tpab.json lyrics/kendrick/tpab/
     that last slash / in target_directory is important
     """
-    assert len(sys.argv) == 3, 'command line arguments: album.txt, target_directory'
+    assert len(sys.argv) == 3, 'command line arguments: album.json, target_directory'
     _, album_file, target_directory = sys.argv
     TOKEN = os.environ['TOKEN']
     headers = {'Authorization': 'Bearer ' + TOKEN}
