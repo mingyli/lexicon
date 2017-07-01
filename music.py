@@ -88,18 +88,18 @@ class Album(TextCollection):
     A TextCollection that is formed from text files containing
     the lyrics of an album.
 
-    >>> damn = Album('lyrics/kendrick/damn.txt')
+    >>> damn = Album('lyrics/kendrick/damn.json')
     >>> len(damn)
     14
     """
 
     def __init__(self, album_file):
         """
-        if the album info is given by `lyrics/kendrick/damn.txt
+        if the album info is given by `lyrics/kendrick/damn.json
         then the corpus path is given by `lyrics/kendrick/damn/`
         """
 
-        # split into ('lyrics/kendrick/damn', '.txt')
+        # split into ('lyrics/kendrick/damn', '.json')
         root, ext = os.path.splitext(album_file)
         root += '/'
         self.artist, self.title, song_titles = genius.parse_album_file(album_file)
@@ -107,7 +107,9 @@ class Album(TextCollection):
                                             r'.*\.txt',
                                             word_tokenizer=tokenizer)
         super().__init__(self.corpus.words())
-        self.tracks = [Song(root + fileid) for fileid in self.corpus.fileids()]
+        self.tracks = [Song(root + fileid, title=title)
+                       for title, fileid 
+                       in zip(song_titles, self.corpus.fileids())]
 
     def __len__(self):
         return len(self.tracks)
@@ -119,7 +121,8 @@ class Album(TextCollection):
         return self.tracks[index]
 
 class Song(TextCollection):
-    def __init__(self, fileid):
+    def __init__(self, fileid, title=None):
+        self.title = title
         self.fileid = fileid
         self.corpus = PlaintextCorpusReader('.', 
                                             fileid,
@@ -137,4 +140,4 @@ class Song(TextCollection):
         return hash(self.fileid)
 
 if __name__ == '__main__':
-    damn = Album('lyrics/kendrick/damn.txt')
+    damn = Album('lyrics/kendrick/damn.json')
