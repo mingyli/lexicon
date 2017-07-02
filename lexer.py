@@ -16,7 +16,23 @@ def tfidf(word, document, collection):
     idf = math.log(len(collection) / appearances)
     return tf * idf
 
-def important_words(album, n=None):
+def important(document, collection, n=None):
+    """
+    Get the n most important words in a document
+    with respect to a collection based on the 
+    highest tf-idf scores.
+    """
+    terms = [] # as a min-heap
+    for word in document.lexicon:
+        tfidf_score = tfidf(word, document, collection)
+        new_term = Term(word=word, tfidf=tfidf_score)
+        if len(terms) == n:
+            heapq.heappushpop(terms, new_term)
+        else:
+            heapq.heappush(terms, new_term)
+    return terms
+
+def important_words_album(album, n=None):
     """
     Get the n most important words in each song based on
     tf-idf score of each song with respect to the
@@ -26,7 +42,7 @@ def important_words(album, n=None):
     sorted by their tf-idf scores.
 
     >>> damn_album = Album('lyrics/kendrick/damn.json')
-    >>> damn_important_words = important_words(damn_album, 5)
+    >>> damn_important_words = important_words_album(damn_album, 5)
     >>> dna = damn_album[1]
     >>> terms = [term for term in damn_important_words[dna]]
     >>> sorted(term.word for term in terms)
@@ -71,11 +87,7 @@ def important_words(album, n=None):
 if __name__ == '__main__':
     import pprint
     damn_album = Album('lyrics/kendrick/damn.txt')
-    damn_important_words = important_words(damn_album)
+    damn_important_words = important_words_album(damn_album)
     pp = pprint.PrettyPrinter()
     print(damn_album[1])
     pp.pprint(damn_important_words[damn_album[1]])
-    # damn_important_words = important_words(damn_album, 5)
-    # for song in damn_album:
-    #     print(song)
-    #     pp.pprint(damn_important_words[song])
