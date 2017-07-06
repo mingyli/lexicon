@@ -1,22 +1,26 @@
 import nltk
 import random
 from music import Album, Song
+from lexer import important_words
 
-albums = [Album('lyrics/kendrick/damn.txt'),
-          Album('lyrics/taylor/red.txt'),
-          Album('lyrics/taylor/1989.txt'),
-          Album('lyrics/kendrick/tpab.txt')]
+albums = [Album('lyrics/kendrick/damn.json'),
+          Album('lyrics/taylor/red.json'),
+          Album('lyrics/taylor/1989.json'),
+          Album('lyrics/kendrick/tpab.json')]
 documents = [(song.words, album.artist) for album in albums for song in album]
-# documents = [(song.words, album.artist) for song in album for album in albums]
 random.shuffle(documents)
 
 all_words = sum([album.fdist for album in albums], nltk.FreqDist())
-# this looks at the most common words out of all albums
-# not good at classifying for things such as the last line
-# because the other words are contains=False, which
-# makes it more likely for taylor to be selected
-# TODO use highest tfidf words instead
-word_features = all_words.most_common(500)
+# word_features = all_words.most_common(500)
+
+# collect the n most important words from each song
+# based on highest tfidf score
+word_features = set()
+for album in albums:
+    for song in album:
+        imp_words = important_words(song, all_words, n=10)
+        word_features.update([t.word for t in imp_words])
+print(word_features)
 
 def document_features(document):
     """
@@ -28,11 +32,20 @@ def document_features(document):
     """
     document_words = set(document)
     features = dict()
-    for word, count in word_features:
+    for word in word_features:
         features['contains({})'.format(word)] = word in document_words
     return features
 
 feature_sets = [(document_features(d), c) for (d, c) in documents]
+
+def predict_song(test_song):
+    print("The classifier predicts {} to be similar to".format(test_song.title))
+    test_set = document_features(test_song.words)
+    prediction = classifier.classify(test_set)
+    print(prediction)
+    print("with probability")
+    prob_dist = classifier.prob_classify(test_set)
+    print(prob_dist.prob(prediction))
 
 if __name__ == '__main__':
     split = int(len(feature_sets) / 3)
@@ -45,11 +58,10 @@ if __name__ == '__main__':
 
     # the algorithm predicts that this Vince Staples song is 
     # most similar to Kendrick Lamar's songs
-    print("The classifier predicts this Vince Staples song to be similar to")
-    test_song = Song('lyrics/vince/summertime06/08.txt')
-    test_set = document_features(test_song.words)
-    prediction = classifier.classify(test_set)
-    print(prediction)
-    print("with probability")
-    prob_dist = classifier.prob_classify(test_set)
-    print(prob_dist.prob(prediction))
+    test_song = Song('lyrics/vince/summertime06/08.txt', title='SAMO')
+    predict_song(test_song)
+
+    bft = Album('lyrics/vince/bigfishtheory.json')
+    for song in bft:
+        predict_song(song)
+        print()

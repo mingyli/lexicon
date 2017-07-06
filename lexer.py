@@ -16,12 +16,23 @@ def tfidf(word, document, collection):
     idf = math.log(len(collection) / appearances)
     return tf * idf
 
-def important(document, collection, n=None):
+def important_words(document, collection, n=None):
     """
     Get the n most important words in a document
     with respect to a collection based on the 
     highest tf-idf scores.
+    If n is None then all terms will be returned.
+
+    >>> damn = Album('lyrics/kendrick/damn.json')
+    >>> dna = damn[1]
+    >>> terms = important_words(dna, damn, 5)
+    >>> sorted(term.word for term in terms)
+    ['dna', 'ganja', 'gimme', 'got', 'inside']
+    >>> max(terms, key=lambda t: t.tfidf).word
+    'dna'
     """
+
+    # Collects the n terms with highest tf-idf using a min heap.
     terms = [] # as a min-heap
     for word in document.lexicon:
         tfidf_score = tfidf(word, document, collection)
@@ -30,58 +41,20 @@ def important(document, collection, n=None):
             heapq.heappushpop(terms, new_term)
         else:
             heapq.heappush(terms, new_term)
+
+    """A slower implementation that collects all terms then sorts.
+       Likely to be faster only for large n.
+    terms = []
+    for word, count in song.wordcounts():
+        tf = count
+        appearances = sum(word in song for song in album)
+        idf = math.log(len(album) / appearances)
+        terms.append(Term(word=word, tfidf=tf * idf))
+
+    terms.sort(key=lambda t: -t.tfidf)
+    return terms[:n]
+    """
     return terms
-
-def important_words_album(album, n=None):
-    """
-    Get the n most important words in each song based on
-    tf-idf score of each song with respect to the
-    album. If n is None then all words will be collected.
-
-    Returns a set mapping each song to a list of n Terms
-    sorted by their tf-idf scores.
-
-    >>> damn_album = Album('lyrics/kendrick/damn.json')
-    >>> damn_important_words = important_words_album(damn_album, 5)
-    >>> dna = damn_album[1]
-    >>> terms = [term for term in damn_important_words[dna]]
-    >>> sorted(term.word for term in terms)
-    ['dna', 'ganja', 'gimme', 'got', 'inside']
-    >>> max(terms, key=lambda t: t.tfidf).word
-    'dna'
-    """
-    important_words = dict()
-
-    for song in album:
-        """Collects the n terms with highest tf-idf using a min heap."""
-        terms = [] # as a heap
-        for word in song.lexicon:
-            tfidf_score = tfidf(word, song, album)
-            new_term = Term(word=word, tfidf=tfidf_score)
-            if len(terms) == n:
-                # pushes new_term, then removes the term with lowest tf-idf
-                heapq.heappushpop(terms, new_term)
-            else:
-                heapq.heappush(terms, new_term)
-
-        important_words[song] = sorted(terms)
-
-        """A slower implementation that collects all terms then sorts.
-           Likely to be faster only for large n.
-        important_words[song] = set()
-        terms = []
-        for word, count in song.wordcounts():
-            tf = count
-            appearances = sum(word in song for song in album)
-            idf = math.log(len(album) / appearances)
-            terms.append(Term(word=word, tfidf=tf * idf))
-
-        terms.sort(key=lambda t: -t.tfidf)
-        for i in range(n):
-            important_words[song].add(terms[i])
-        """
-
-    return important_words
 
 
 if __name__ == '__main__':

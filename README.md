@@ -29,9 +29,9 @@ requires a Genius API token. I set mine as an environment variable using `export
 }
 ```
 
-then run
+then run `genius.py` with the JSON file and a directory as arguments
 
-`$ python genius.py lyrics/vince/bigfishtheory.json lyrics/vince/bigfishtheory/`
+`python genius.py bigfishtheory.json lyrics/vince/bigfishtheory/`
 
 ## [`music.py`](music.py)
 
