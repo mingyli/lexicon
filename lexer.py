@@ -11,16 +11,31 @@ class Term(namedtuple('Term', ['word', 'tfidf'])):
         return self.tfidf < other.tfidf
 
 def tfidf(word, document, collection):
+    """Return the tf-idf score of a word
+    in a document with respect to a collection of text.
+
+    TODO: offer more settings, such as count frequency vs
+    proportional frequency
+
+    >>> from music import TextCollection
+    >>> word = 'dolphin'
+    >>> document0 = TextCollection(['dolphin', 'sea', 'world'])
+    >>> document1 = TextCollection(['sea', 'world', 'fun'])
+    >>> score = tfidf(word, document0, [document0, document1])
+    >>> format(score, '0.2f')
+    '0.69'
+    """
+
     tf = document.count(word)
     appearances = sum(word in doc for doc in collection)
     idf = math.log(len(collection) / appearances)
     return tf * idf
 
 def important_words(document, collection, n=None):
-    """
-    Get the n most important words in a document
+    """Return the n most important words in a document
     with respect to a collection based on the 
-    highest tf-idf scores.
+    highest tf-idf scores. The words are returned as
+    namedtuples `Term`s.
     If n is None then all terms will be returned.
 
     >>> damn = Album('lyrics/kendrick/damn.json')

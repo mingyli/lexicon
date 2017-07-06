@@ -9,6 +9,13 @@ base_url = 'https://api.genius.com'
 search_url = base_url + '/search'
 
 def lyrics_from_song_api_path(song_api_path):
+    """Return a list of cleaned lyrics.
+
+    genius.com includes section headings, which I
+    remove because they should not be included
+    in the lyrics.
+    """
+
     song_url = base_url + song_api_path
     response = requests.get(song_url, headers=headers)
     json = response.json()
@@ -22,12 +29,22 @@ def lyrics_from_song_api_path(song_api_path):
     return re.sub(r'\n\[[^\]]*\]', '', lyrics)
 
 def parse_album_file(album_file):
-    """
+    """Return attributes from a JSON file detailing an album.
+
     read from a json file with attributes
     'artist': string
     'album': string
     'song': list of strings
+
+    >>> artist, album, songs = parse_album_file('lyrics/vince/summertime06.json')
+    >>> artist
+    'Vince Staples'
+    >>> album
+    "Summertime '06"
+    >>> len(songs)
+    20
     """
+
     with open(album_file) as data_file:
         data = json.load(data_file)
     artist_name = data['artist']

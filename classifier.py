@@ -20,7 +20,6 @@ for album in albums:
     for song in album:
         imp_words = important_words(song, all_words, n=10)
         word_features.update([t.word for t in imp_words])
-print(word_features)
 
 def document_features(document):
     """
