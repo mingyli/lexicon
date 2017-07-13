@@ -74,6 +74,9 @@ class TextCollection:
     def __len__(self):
         return len(self.words)
 
+    def words(self):
+        return iter(self.words)
+
     def count(self, word):
         return self.fdist[word]
 

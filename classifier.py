@@ -22,9 +22,8 @@ for album in albums:
         word_features.update([t.word for t in imp_words])
 
 def document_features(document):
-    """
-    returns a dictionary mapping string features names to
-    features
+    """Returns a dictionary mapping 
+    string features names to features.
 
     Keyword arguments:
     document -- a list of words
@@ -45,6 +44,7 @@ def predict_song(test_song):
     print("with probability")
     prob_dist = classifier.prob_classify(test_set)
     print(prob_dist.prob(prediction))
+
 
 if __name__ == '__main__':
     split = int(len(feature_sets) / 3)

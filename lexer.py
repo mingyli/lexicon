@@ -47,8 +47,8 @@ def important_words(document, collection, n=None):
     'dna'
     """
 
-    # Collects the n terms with highest tf-idf using a min heap.
-    terms = [] # as a min-heap
+    # Collect the n terms with highest tf-idf using a min heap.
+    terms = [] 
     for word in document.lexicon:
         tfidf_score = tfidf(word, document, collection)
         new_term = Term(word=word, tfidf=tfidf_score)
@@ -56,6 +56,7 @@ def important_words(document, collection, n=None):
             heapq.heappushpop(terms, new_term)
         else:
             heapq.heappush(terms, new_term)
+    return terms
 
     """A slower implementation that collects all terms then sorts.
        Likely to be faster only for large n.
@@ -69,7 +70,6 @@ def important_words(document, collection, n=None):
     terms.sort(key=lambda t: -t.tfidf)
     return terms[:n]
     """
-    return terms
 
 
 if __name__ == '__main__':
