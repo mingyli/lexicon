@@ -159,14 +159,13 @@ if __name__ == '__main__':
     from tfidf import tfidf, important_words, Term
     albums = [Album('lyrics/kendrick/damn.json'),
               Album('lyrics/taylor/red.json')]
-    albums = [Album('lyrics/taylor/red.json')]
 
     # collect the n most important words from each song
     # `important_words` is based on highest tfidf score
     all_songs = [song for album in albums for song in album]
     word_features = set()
     for song in all_songs:
-        imp_words = important_words(song, all_songs, n=5)
+        imp_words = important_words(song, all_songs, n=2)
         word_features.update([t.word for t in imp_words])
 
     clusterer = Clusterer(word_features)
@@ -177,4 +176,6 @@ if __name__ == '__main__':
             terms.append(Term(word=word, tfidf=tfidf(word, song, all_songs)))
         wsvecs.append(WordScoreVector(song.title, terms))
 
-    centroids, clusters = clusterer.k_means(wsvecs, 2)
+    centroids, clusters = clusterer.k_means(wsvecs, 4)
+    for cluster in clusters:
+        print(len(cluster))
