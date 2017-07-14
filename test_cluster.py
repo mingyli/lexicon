@@ -48,6 +48,8 @@ if __name__ == '__main__':
     for song in all_songs:
         imp_words = important_words(song, all_songs, n=10)
         vocab.update([t.word for t in imp_words])
+    
+    vocab = {'heard', 'york', 'cool', 'love', 'trouble'}
 
     vocab = list(vocab)
     wsvecs = []
@@ -58,3 +60,4 @@ if __name__ == '__main__':
         wsvecs.append(dict(terms))
     X = np.array([dict2list(v) for v in wsvecs])
     kmeans = KMeans(n_clusters=2).fit(X)
+    print(kmeans.labels_)

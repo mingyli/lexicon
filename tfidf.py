@@ -22,12 +22,11 @@ def tfidf(word, document, collection):
     >>> document0 = TextCollection(['dolphin', 'sea', 'world'])
     >>> document1 = TextCollection(['sea', 'world', 'fun'])
     >>> score = tfidf(word, document0, [document0, document1])
-
-    # >>> format(score, '0.2f')
-    # '0.69'
+    >>> format(score, '0.2f')
+    '0.69'
     """
 
-    tf = document.count(word) / len(document)
+    tf = document.count(word)
     appearances = sum(word in doc for doc in collection)
     idf = math.log(len(collection) / appearances)
     return tf * idf
