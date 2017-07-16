@@ -39,7 +39,7 @@ if __name__ == '__main__':
     from music import Album, Song
     from tfidf import tfidf, important_words, Term
     albums = [Album('lyrics/kendrick/damn.json'),
-              Album('lyrics/taylor/red.json')]
+              Album('lyrics/taylor/1989.json')]
 
     # collect the n most important words from each song
     # `important_words` is based on highest tfidf score
@@ -49,7 +49,7 @@ if __name__ == '__main__':
         imp_words = important_words(song, all_songs, n=10)
         vocab.update([t.word for t in imp_words])
     
-    vocab = {'heard', 'york', 'cool', 'love', 'trouble'}
+    vocab = {'york', 'heard', 'shake'}
 
     vocab = list(vocab)
     wsvecs = []
