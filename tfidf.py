@@ -1,8 +1,12 @@
 import math
 import heapq
 from collections import namedtuple
+from dask.distributed import Client
 
 from music import Song, Album
+
+client = Client()
+
 
 class Term(namedtuple('Term', ['word', 'tfidf'])):
     def __lt__(self, other):
@@ -10,9 +14,13 @@ class Term(namedtuple('Term', ['word', 'tfidf'])):
             return self.word < other.word
         return self.tfidf < other.tfidf
 
-def tfidf(word, document, collection):
+def tfidf(word, document, collection, distributed=False):
     """Return the tf-idf score of a word
     in a document with respect to a collection of text.
+
+    `distributed` should only be used for collections
+    with a large number of documents because the
+    dask Client suffers from some overhead.
 
     TODO: offer more settings, such as count frequency vs
     proportional frequency
@@ -27,7 +35,12 @@ def tfidf(word, document, collection):
     """
 
     tf = document.count(word)
-    appearances = sum(word in doc for doc in collection)
+    if distributed:
+        appearances = client.map(lambda doc: word in doc, collection)
+        appearances = client.submit(sum, appearances)
+        appearances = appearances.result()
+    else:
+        appearances = sum(word in doc for doc in collection)
     idf = math.log(len(collection) / appearances)
     return tf * idf
 

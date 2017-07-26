@@ -1,8 +1,8 @@
 ## [`genius.py`](genius.py)
 
-uses BeautifulSoup and Genius API to retrieve lyrics 
+Uses BeautifulSoup and Genius API to retrieve lyrics.
 
-requires a Genius API token. I set mine as an environment variable using `export TOKEN=<token>`
+Requires a Genius API token. I set mine as an environment variable using `export TOKEN=<token>`
 
 ### Usage
 
@@ -33,9 +33,10 @@ then run `genius.py` with the JSON file and a directory as arguments
 
 `python genius.py bigfishtheory.json lyrics/vince/bigfishtheory/`
 
+
 ## [`music.py`](music.py)
 
-easily create artist corpora.
+Easily creates artist corpora.
 
 ### Usage
 
@@ -54,4 +55,20 @@ for song in damn:
 
 wordcount = sum(len(song) for song in damn)
 assert wordcount == len(damn.words)
+```
+
+
+## [`tfidf.py`](tfidf.py)
+
+Provides utilities for calculating the importance of certain words.
+
+### Usage
+
+`tfidf` calculates the tf-idf value of a word in a document, with respect to a collection of documents. The function supports the option for distributed calculations. This should only be used with collections containing a large number of documents because the distributed client suffers from some overhead.
+
+```python
+damn = Album('lyrics/kendrick/damn.json')
+word = 'dna'
+song = damn[1] # the song DNA.
+score = tfidf(word, song, damn)
 ```
