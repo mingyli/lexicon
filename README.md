@@ -64,7 +64,7 @@ Provides utilities for calculating the importance of certain words.
 
 ### Usage
 
-`tfidf` calculates the tf-idf value of a word in a document, with respect to a collection of documents. The function supports the option for distributed calculations. This should only be used with collections containing a large number of documents because the distributed client suffers from some overhead.
+`tfidf` calculates the tf-idf value of a word in a document, with respect to a collection of documents. The function supports the option for parallel calculations. This should only be used with collections containing a large number of documents because threading suffers from some overhead.
 
 ```python
 damn = Album('lyrics/kendrick/damn.json')
