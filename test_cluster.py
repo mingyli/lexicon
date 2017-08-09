@@ -31,6 +31,12 @@ vocab = list(vocab)
 def dict2list(d):
     return [d.get(w, 0) for w in vocab]
 
+def normalize(lst):
+    m = sum(lst)
+    if m == 0:
+        return lst
+    return [i / m for i in lst]
+
 X = np.array([dict2list(d) for d in vecs])
 kmeans = KMeans(n_clusters=2).fit(X)
 
@@ -38,26 +44,26 @@ kmeans = KMeans(n_clusters=2).fit(X)
 if __name__ == '__main__':
     from music import Album, Song
     from tfidf import tfidf, important_words, Term
-    albums = [Album('lyrics/kendrick/damn.json'),
-              Album('lyrics/taylor/1989.json')]
+    albums = [Album('lyrics/kendrick/tpab.json'),
+              Album('lyrics/taylor/red.json')]
 
     # collect the n most important words from each song
     # `important_words` is based on highest tfidf score
     all_songs = [song for album in albums for song in album]
     vocab = set()
     for song in all_songs:
-        imp_words = important_words(song, all_songs, n=10)
+        imp_words = important_words(song, all_songs, n=3)
         vocab.update([t.word for t in imp_words])
     
-    vocab = {'york', 'heard', 'shake'}
+    # vocab = {'york', 'heard', 'shake'}
 
     vocab = list(vocab)
     wsvecs = []
     for song in all_songs:
         terms = []
         for word in vocab:
-            terms.append(Term(word=word, tfidf=tfidf(word, song, all_songs)))
+            terms.append(Term(word=word, score=tfidf(word, song, all_songs)))
         wsvecs.append(dict(terms))
-    X = np.array([dict2list(v) for v in wsvecs])
+    X = np.array([normalize(dict2list(v)) for v in wsvecs])
     kmeans = KMeans(n_clusters=2).fit(X)
     print(kmeans.labels_)
