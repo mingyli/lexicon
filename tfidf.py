@@ -8,11 +8,11 @@ from music import Song, Album
 client = Client()
 
 
-class Term(namedtuple('Term', ['word', 'tfidf'])):
+class Term(namedtuple('Term', ['word', 'score'])):
     def __lt__(self, other):
-        if self.tfidf == other.tfidf:
+        if self.score == other.score:
             return self.word < other.word
-        return self.tfidf < other.tfidf
+        return self.score < other.score
 
 def tfidf(word, document, collection, distributed=False):
     """Return the tf-idf score of a word
@@ -56,7 +56,7 @@ def important_words(document, collection, n=None):
     >>> terms = important_words(dna, damn, 5)
     >>> sorted(term.word for term in terms)
     ['dna', 'ganja', 'gimme', 'got', 'inside']
-    >>> max(terms, key=lambda t: t.tfidf).word
+    >>> max(terms, key=lambda t: t.score).word
     'dna'
     """
 
@@ -64,7 +64,7 @@ def important_words(document, collection, n=None):
     terms = [] 
     for word in document.lexicon:
         tfidf_score = tfidf(word, document, collection)
-        new_term = Term(word=word, tfidf=tfidf_score)
+        new_term = Term(word=word, score=tfidf_score)
         if len(terms) == n:
             heapq.heappushpop(terms, new_term)
         else:
@@ -78,7 +78,7 @@ def important_words(document, collection, n=None):
         tf = count
         appearances = sum(word in song for song in album)
         idf = math.log(len(album) / appearances)
-        terms.append(Term(word=word, tfidf=tf * idf))
+        terms.append(Term(word=word, score=tf * idf))
 
     terms.sort(key=lambda t: -t.tfidf)
     return terms[:n]

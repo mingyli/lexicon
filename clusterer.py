@@ -173,7 +173,7 @@ if __name__ == '__main__':
     for song in all_songs:
         terms = []
         for word in word_features:
-            terms.append(Term(word=word, tfidf=tfidf(word, song, all_songs)))
+            terms.append(Term(word=word, score=tfidf(word, song, all_songs)))
         wsvecs.append(WordScoreVector(song.title, terms))
 
     centroids, clusters = clusterer.k_means(wsvecs, 4)
