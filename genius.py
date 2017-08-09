@@ -64,6 +64,7 @@ if __name__ == '__main__':
     headers = {'Authorization': 'Bearer ' + TOKEN}
     artist_name, album_name, songs = parse_album_file(album_file)
     for i, song_title in enumerate(songs):
+        print("Trying to retrieve {}".format(song_title))
         # query string sent as request
         data = {'q': song_title + ' ' + artist_name}
         response = requests.get(search_url, data=data, headers=headers)
@@ -77,4 +78,5 @@ if __name__ == '__main__':
                 f.write(song_title + '\n')
                 f.write(lyrics)
                 f.close()
+                print("Retrieved {}".format(song_title))
                 break
