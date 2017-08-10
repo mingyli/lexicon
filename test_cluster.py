@@ -2,7 +2,7 @@ import random
 import numpy as np
 
 from sklearn.cluster import KMeans
-from clusterer import Clusterer
+from lexicon import Clusterer
 
 vocab = {'a', 'b', 'c'}
 c = Clusterer(vocab)
@@ -42,8 +42,8 @@ kmeans = KMeans(n_clusters=2).fit(X)
 
 
 if __name__ == '__main__':
-    from music import Album, Song
-    from tfidf import tfidf, important_words, Term
+    from lexicon.music import Album, Song
+    from lexicon.tfidf import tfidf, important_words, Term
     albums = [Album('lyrics/kendrick/tpab.json'),
               Album('lyrics/taylor/red.json')]
 

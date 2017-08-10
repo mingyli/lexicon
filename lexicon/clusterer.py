@@ -1,6 +1,10 @@
 import random
 from statistics import mean
 
+from .music import Album, Song
+from .tfidf import tfidf, important_words, Term
+
+
 class HashableDict(dict):
     """A dictionary that can be hashed for use in
     sets or other dictionaries.
@@ -155,8 +159,6 @@ class Clusterer:
         return centroids, clusters
 
 if __name__ == '__main__':
-    from music import Album, Song
-    from tfidf import tfidf, important_words, Term
     albums = [Album('lyrics/kendrick/damn.json'),
               Album('lyrics/taylor/red.json')]
 

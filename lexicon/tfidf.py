@@ -4,7 +4,7 @@ from collections import namedtuple
 from multiprocessing import Pool
 from functools import partial
 
-from music import Song, Album
+from .music import Song, Album
 
 
 class Term(namedtuple('Term', ['word', 'score'])):

@@ -6,7 +6,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import PlaintextCorpusReader
 from nltk.stem.snowball import SnowballStemmer
 
-import genius
+from . import genius
 
 pattern = r"""(?x)               # set flag to allow verbose regexps
               (?:[A-Z]\.)+       # abbreviations, e.g. U.S.A.
@@ -15,9 +15,11 @@ pattern = r"""(?x)               # set flag to allow verbose regexps
               |(?:[+/\-@&*])     # special characters with meanings
            """
 tokenizer = RegexpTokenizer(pattern)
+
 punctuation = {'!', '"', '#', '$', '%', '&', "'", '(', ')', '*', '+', ',',
         '-', '.', '/', '’', ':', ';', '<', '=', '>', '?', '@', '[', '\\',
         ']', '^', '_', '`', '{', '|', '}', '~'}
+
 english_stopwords = set(stopwords.words('english'))
 stemmer = SnowballStemmer('english')
 wnl = WordNetLemmatizer()
@@ -29,7 +31,7 @@ def normalize(words, nostopwords=False, stem=False, lemmatize=False):
     words -- an iterable of strings
     nostopwords -- whether to include common English words (default False)
 
-    note: lemmatizer is slower than stemming but its function is more 
+    note: lemmatizer is slower than stemming but it is
           suitable for looking at song content
 
     >>> list(normalize(["Hello", "you're", "wonderful"], stem=True))

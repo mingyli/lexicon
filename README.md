@@ -1,4 +1,4 @@
-## [`genius.py`](genius.py)
+## [`genius.py`](lexicon/genius.py)
 
 Uses BeautifulSoup and Genius API to retrieve lyrics.
 
@@ -34,7 +34,7 @@ then run `genius.py` with the JSON file and a directory as arguments
 `python genius.py bigfishtheory.json lyrics/vince/bigfishtheory/`
 
 
-## [`music.py`](music.py)
+## [`music.py`](lexicon/music.py)
 
 Easily creates artist corpora.
 
@@ -58,7 +58,7 @@ assert wordcount == len(damn.words)
 ```
 
 
-## [`tfidf.py`](tfidf.py)
+## [`tfidf.py`](lexicon/tfidf.py)
 
 Provides utilities for calculating the importance of certain words.
 
