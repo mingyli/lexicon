@@ -2,7 +2,7 @@ import random
 import numpy as np
 
 from sklearn.cluster import KMeans
-from lexicon import Clusterer
+from lexicon.clusterer import Clusterer
 
 vocab = {'a', 'b', 'c'}
 c = Clusterer(vocab)

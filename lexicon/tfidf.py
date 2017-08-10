@@ -4,7 +4,7 @@ from collections import namedtuple
 from multiprocessing import Pool
 from functools import partial
 
-from .music import Song, Album
+from lexicon.music import Song, Album
 
 
 class Term(namedtuple('Term', ['word', 'score'])):
@@ -27,7 +27,7 @@ def tfidf(word, document, collection, parallel=False):
     TODO: offer more settings, such as count frequency vs
     proportional frequency
 
-    >>> from music import TextCollection
+    >>> from lexicon.music import TextCollection
     >>> word = 'dolphin'
     >>> document0 = TextCollection(['dolphin', 'sea', 'world'])
     >>> document1 = TextCollection(['sea', 'world', 'fun'])

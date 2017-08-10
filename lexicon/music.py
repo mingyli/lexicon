@@ -6,7 +6,7 @@ from nltk.corpus import stopwords
 from nltk.corpus import PlaintextCorpusReader
 from nltk.stem.snowball import SnowballStemmer
 
-from . import genius
+from lexicon import genius
 
 pattern = r"""(?x)               # set flag to allow verbose regexps
               (?:[A-Z]\.)+       # abbreviations, e.g. U.S.A.

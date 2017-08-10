@@ -1,7 +1,7 @@
 import nltk
 import random
-from music import Album, Song
-from tfidf import important_words
+from lexicon.music import Album, Song
+from lexicon.tfidf import important_words
 
 albums = [Album('lyrics/kendrick/damn.json'),
           Album('lyrics/taylor/red.json'),

@@ -1,8 +1,8 @@
 import random
 from statistics import mean
 
-from .music import Album, Song
-from .tfidf import tfidf, important_words, Term
+from lexicon.music import Album, Song
+from lexicon.tfidf import tfidf, important_words, Term
 
 
 class HashableDict(dict):
