@@ -88,6 +88,7 @@ class TextCollection:
     def wordcounts(self):
         return self.fdist.items()
 
+
 class Album(TextCollection):
     """
     A TextCollection that is formed from text files containing
