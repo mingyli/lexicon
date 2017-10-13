@@ -1,4 +1,5 @@
 import math
+import random
 import heapq
 from collections import namedtuple
 from multiprocessing import Pool
@@ -68,7 +69,36 @@ def important_words(document, collection, n=None):
     'dna'
     """
 
+    # Collect the n terms with highest tf-idf using divide and conquer.
+    # Good if have access to entire document.
+    # Expected runtime of O(len(document))
+    def n_largest(terms, n):
+        if len(terms) == 0 or n == 0:
+            return []
+        if len(terms) == n:
+            return terms
+        pivot = random.choice(terms)
+        less, equal, more = [], [], []
+        for term in terms:
+            if term.score > pivot.score:
+                more.append(term)
+            elif term.score == pivot.score:
+                equal.append(term)
+            else:
+                less.append(term)
+        if len(more) >= n:
+            return n_largest(more, n)
+        if len(more) + len(equal) >= n:
+            return more + equal[:n - len(more)]
+        return more + equal + n_largest(less, n - len(more) - len(equal))
+
+    terms = [Term(word, tfidf(word, document, collection)) for word in document.lexicon]
+    return n_largest(terms, n)
+
+    """
     # Collect the n terms with highest tf-idf using a min heap.
+    # Good if words are fed by stream.
+    # Runtime of O(len(document) * log n)
     terms = [] 
     for word in document.lexicon:
         tfidf_score = tfidf(word, document, collection)
@@ -78,6 +108,7 @@ def important_words(document, collection, n=None):
         else:
             heapq.heappush(terms, new_term)
     return terms
+    """
 
     """A slower implementation that collects all terms then sorts.
        Likely to be faster only for large n.
